@@ -1,0 +1,529 @@
+<!--
+  CC0 1.0 Universell (CC0 1.0) Public Domain Dedication
+  https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+  Dieses Werk wurde von [Dein Name] (© [Jahr]) in die Gemeinfreiheit überführt.
+  Soweit rechtlich möglich, verzichte ich auf alle Urheber- und verwandten Schutzrechte.
+
+  Du darfst den Code kopieren, verändern, verbreiten und ausführen –
+  auch zu kommerziellen Zwecken – ganz ohne Erlaubnis oder Bedingungen.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Random Wheel | ETME - TECH</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --color-bg: #111;
+      --color-bg-alt: #181818;
+      --color-primary: #fff;
+      --color-text: #fff;
+      --color-text-muted: #bbb;
+      --color-footer: #181818;
+      --color-border: #222;
+      --color-btn: #fff;
+      --color-btn-hover: #bbb;
+      --shadow-btn: 0 2px 8px 0 rgba(255,255,255,0.04);
+      --transition: 0.18s cubic-bezier(.4,0,.2,1);
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: 'Segoe UI', 'Inter', Arial, sans-serif;
+      font-size: 18px;
+      min-height: 100vh;
+      scroll-behavior: smooth;
+    }
+    .navbar {
+      width: 100%;
+      background: var(--color-bg-alt);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 48px;
+      height: 72px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .navbar-logo {
+      font-size: 2.1em;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--color-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+      transition: margin-right 0.2s;
+      z-index: 202;
+    }
+    .navbar-logo span {
+      color: var(--color-text-muted);
+      font-weight: 400;
+      font-size: 0.7em;
+      letter-spacing: 1px;
+    }
+    .navbar-links {
+      display: flex;
+      gap: 36px;
+      margin-left: 32px;
+      transition: left 0.3s;
+    }
+    .navbar-link {
+      color: var(--color-text);
+      text-decoration: none;
+      font-size: 1.08em;
+      font-weight: 500;
+      padding: 8px 0;
+      border-bottom: 2px solid transparent;
+      transition: color var(--transition), border-color var(--transition);
+      position: relative;
+    }
+    .navbar-link:hover, .navbar-link.active {
+      color: var(--color-primary);
+      border-bottom: 2px solid var(--color-primary);
+    }
+    .navbar-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      margin-left: auto;
+      z-index: 202;
+    }
+    .navbar-toggle span {
+      display: block;
+      width: 28px;
+      height: 3px;
+      margin: 4px 0;
+      background: var(--color-primary);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .sidebar-menu {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      .navbar {
+        padding: 0 12px;
+      }
+      .navbar-logo {
+        font-size: 1.5em;
+        margin-right: 12px;
+      }
+      .navbar-links {
+        gap: 18px;
+        margin-left: 10px;
+      }
+    }
+    @media (max-width: 700px) {
+      .navbar {
+        padding: 0 8px;
+        height: 56px;
+      }
+      .navbar-logo {
+        font-size: 1.1em;
+        margin-right: 0;
+        gap: 6px;
+      }
+      .navbar-links {
+        display: none;
+      }
+      .navbar-toggle {
+        display: flex;
+      }
+      .sidebar-menu {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: -240px;
+        width: 200px;
+        height: 100vh;
+        background: var(--color-bg-alt);
+        box-shadow: 2px 0 16px rgba(0,0,0,0.18);
+        z-index: 300;
+        padding-top: 56px;
+        transition: left 0.3s;
+      }
+      .sidebar-menu.open {
+        left: 0;
+      }
+      .sidebar-link {
+        color: var(--color-primary);
+        text-decoration: none;
+        font-size: 1.1em;
+        font-weight: 500;
+        padding: 18px 24px;
+        border-bottom: 1px solid var(--color-border);
+        transition: background 0.2s, color 0.2s;
+      }
+      .sidebar-link:hover, .sidebar-link.active {
+        background: #222;
+        color: var(--color-btn-hover);
+      }
+      body.sidebar-open {
+        overflow: hidden;
+      }
+    }
+    .main-content {
+      max-width: 480px;
+      margin: 40px auto 0 auto;
+      padding: 0;
+      background: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .main-content h1 {
+      font-size: 2em;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--color-primary);
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .main-content p {
+      color: var(--color-text-muted);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    #wheelWrapper {
+      width: 100%;
+      max-width: 420px;
+      margin: 30px auto 0 auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #wheelContainer {
+      width: 100%;
+      max-width: 420px;
+      aspect-ratio: 1/1;
+      margin: 0 auto;
+      border: none;
+      border-radius: 0;
+      overflow: visible;
+      background: none;
+      box-shadow: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #pointer {
+      position: absolute;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-bottom: 28px solid #fff;
+      z-index: 2;
+      filter: drop-shadow(0 2px 6px #0008);
+    }
+    #controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 420px;
+      margin: 24px auto 0 auto;
+    }
+    #itemInput {
+      flex: 1;
+      padding: 8px;
+      background: #1e1e1e;
+      border: 1px solid #444;
+      color: #eee;
+      border-radius: 4px;
+    }
+    button {
+      padding: 8px 12px;
+      background: #333;
+      border: none;
+      color: #eee;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #555; }
+    #itemsList {
+      width: 100%;
+      max-width: 420px;
+      margin: 20px auto;
+    }
+    .item {
+      display: flex;
+      gap: 8px;
+      margin: 5px 0;
+    }
+    .item input {
+      flex: 1;
+      padding: 6px;
+      background: #1e1e1e;
+      border: 1px solid #444;
+      color: #eee;
+      border-radius: 4px;
+    }
+    .deleteBtn {
+      padding: 6px 10px;
+      background: #800;
+      border: none;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .deleteBtn:hover { background: #a00; }
+    footer {
+      width: 100%;
+      background: var(--color-footer);
+      color: var(--color-text-muted);
+      text-align: center;
+      padding: 38px 0 18px 0;
+      font-size: 1em;
+      letter-spacing: 0.5px;
+      margin-top: 60px;
+    }
+    .footer-links {
+      margin-bottom: 10px;
+    }
+    .footer-links a {
+      color: var(--color-primary);
+      text-decoration: none;
+      margin: 0 18px;
+      font-weight: 600;
+      transition: color var(--transition);
+    }
+    .footer-links a:hover {
+      color: var(--color-btn-hover);
+      text-decoration: underline;
+    }
+    .footer-copy {
+      margin-top: 8px;
+      font-size: 0.98em;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="../index.html" class="navbar-logo">ETME <span>- TECH</span></a>
+    <div class="navbar-toggle" id="navbar-toggle" aria-label="Open navigation" tabindex="0">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="navbar-links" id="navbar-links">
+      <a class="navbar-link active" href="../index.html">Home</a>
+      <a class="navbar-link" href="../index.html#tools">Tools</a>
+      <a class="navbar-link" href="../index.html#features">Features</a>
+      <a class="navbar-link" href="../index.html#contact">Contact</a>
+    </div>
+    <nav class="sidebar-menu" id="sidebar-menu">
+      <a class="sidebar-link active" href="../index.html">Home</a>
+      <a class="sidebar-link" href="../index.html#tools">Tools</a>
+      <a class="sidebar-link" href="../index.html#features">Features</a>
+      <a class="sidebar-link" href="../index.html#contact">Contact</a>
+    </nav>
+  </nav>
+  <div class="main-content">
+    <h1>Random Wheel</h1>
+    <p>Enter your options, spin the wheel, and let chance decide!</p>
+    <div id="wheelWrapper">
+      <div id="pointer"></div>
+      <div id="wheelContainer">
+        <canvas id="wheel"></canvas>
+      </div>
+    </div>
+    <div id="controls">
+      <input id="itemInput" type="text" placeholder="Add entry"/>
+      <button id="addBtn">Add</button>
+      <button id="spinBtn">Spin</button>
+    </div>
+    <div id="itemsList"></div>
+  </div>
+  <footer>
+    <div class="footer-links">
+      <a href="../impressum.html">Imprint</a> |
+      <a href="../datenschutz.html">Privacy Policy</a>
+    </div>
+    <div class="footer-copy">
+      &copy; 2025 ETME - TECH.
+    </div>
+  </footer>
+  <script>
+    const toggle = document.getElementById('navbar-toggle');
+    const sidebar = document.getElementById('sidebar-menu');
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      document.body.classList.remove('sidebar-open');
+    }
+    function openSidebar() {
+      sidebar.classList.add('open');
+      document.body.classList.add('sidebar-open');
+    }
+    toggle.addEventListener('click', () => {
+      if (sidebar.classList.contains('open')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+    toggle.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        if (sidebar.classList.contains('open')) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      }
+    });
+    Array.from(sidebar.getElementsByClassName('sidebar-link')).forEach(link => {
+      link.addEventListener('click', () => {
+        closeSidebar();
+      });
+    });
+    window.addEventListener('resize', () => {
+      closeSidebar();
+    });
+
+    const canvas    = document.getElementById('wheel');
+    const ctx       = canvas.getContext('2d');
+    const container = document.getElementById('wheelContainer');
+    const input     = document.getElementById('itemInput');
+    const addBtn    = document.getElementById('addBtn');
+    const spinBtn   = document.getElementById('spinBtn');
+    const listDiv   = document.getElementById('itemsList');
+    let items    = [];
+    let rotation = 0;
+    function resizeCanvas() {
+      const size = container.clientWidth;
+      canvas.width  = size;
+      canvas.height = size;
+      drawWheel();
+    }
+    function addItem() {
+      const val = input.value.trim();
+      if (!val) return;
+      items.push(val);
+      input.value = '';
+      renderList();
+      drawWheel();
+    }
+    function renderList() {
+      listDiv.innerHTML = '';
+      items.forEach((txt, idx) => {
+        const row = document.createElement('div');
+        row.className = 'item';
+        const fld = document.createElement('input');
+        fld.type  = 'text';
+        fld.value = txt;
+        fld.addEventListener('input', () => {
+          items[idx] = fld.value;
+          drawWheel();
+        });
+        const del = document.createElement('button');
+        del.className = 'deleteBtn';
+        del.textContent = 'Delete';
+        del.addEventListener('click', () => {
+          items.splice(idx, 1);
+          renderList();
+          drawWheel();
+        });
+        row.append(fld, del);
+        listDiv.appendChild(row);
+      });
+    }
+    function drawWheel() {
+      const n    = items.length;
+      const w    = canvas.width;
+      const half = w / 2;
+      const r    = half - 10;
+      ctx.clearRect(0, 0, w, w);
+      // Draw white outline always
+      ctx.save();
+      ctx.translate(half, half);
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, 2 * Math.PI);
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      ctx.restore();
+      if (n === 0) return;
+      const segAngle = 2 * Math.PI / n;
+      ctx.save();
+      ctx.translate(half, half);
+      ctx.rotate(rotation);
+      for (let i = 0; i < n; i++) {
+        const start = i * segAngle - Math.PI / 2;
+        ctx.fillStyle   = `hsl(${(i*360)/n},90%,${i%2===0?60:45}%)`;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, r, start, start + segAngle);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.save();
+        const ang = start + segAngle/2;
+        ctx.translate(Math.cos(ang)*r*0.65, Math.sin(ang)*r*0.65);
+        ctx.rotate(ang + Math.PI/2);
+        ctx.fillStyle   = '#fff';
+        ctx.font        = `${Math.max(12, r*0.08)}px Arial`;
+        ctx.textAlign   = 'center';
+        ctx.fillText(items[i], 0, 0);
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+    function spinWheel() {
+      if (items.length === 0) {
+        alert('Please add entries first.');
+        return;
+      }
+      spinBtn.disabled = true;
+      const extraSpins = Math.random() * 2 + 3;
+      const extraAngle = Math.random() * 2 * Math.PI;
+      const totalRot   = extraSpins * 2 * Math.PI + extraAngle;
+      const duration   = 5000;
+      const startTime  = performance.now();
+      function animate(now) {
+        const t    = Math.min((now - startTime) / duration, 1);
+        const ease = 1 - Math.pow(1 - t, 3);
+        rotation = ease * totalRot;
+        drawWheel();
+        if (t < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          const segAngle = 2 * Math.PI / items.length;
+          const finalRot = rotation % (2 * Math.PI);
+          const delta    = (2 * Math.PI - finalRot) % (2 * Math.PI);
+          const idx      = Math.floor(delta / segAngle);
+          alert('Winner: ' + items[idx]);
+          spinBtn.disabled = false;
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    addBtn.addEventListener('click',    addItem);
+    spinBtn.addEventListener('click',   spinWheel);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') addItem(); });
+    resizeCanvas();
+  </script>
+</body>
+</html>

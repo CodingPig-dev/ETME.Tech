@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ETME - TECH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="ETME - TECH: Your modern toolbox for smart web tools.">
+    <link rel="icon" href="data:,">
+    <style>
+        :root {
+            --color-bg: #111;
+            --color-bg-alt: #181818;
+            --color-bg-held: linear-gradient(121deg, #181818 1%, #111 100%);
+            --color-primary: #fff;
+            --color-accent: #fff;
+            --color-accent2: #fff;
+            --color-accent3: #fff;
+            --color-text: #fff;
+            --color-text-muted: #bbb;
+            --color-footer: #181818;
+            --color-border: hsl(0, 0%, 66%);
+            --color-card: #181818;
+            --color-card-hover: #222;
+            --color-butn: #fff;
+            --color-butn-hover: #bbb;
+            --shadow-card: 0 4px 32px 0 rgba(0,0,0,0.18);
+            --shadow-butn: 0 2px 8px 0 rgba(255,255,255,0.04);
+            --transition: 0.18s cubic-bezier(.4,0,.2,1);
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: 'Segoe UI', 'Inter', Arial, sans-serif;
+            font-size: 18px;
+            min-height: 100vh;
+            scroll-behavior: smooth;
+        }
+        .navi {
+            width: 100%;
+            background: var(--color-bg-alt);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 48px;
+            height: 72px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navi-logo {
+            font-size: 2.1em;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--color-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+            transition: margin-right 0.2s;
+            z-index: 202;
+        }
+        .navi-logo span {
+            color: var(--color-text-muted);
+            font-weight: 400;
+            font-size: 0.7em;
+            letter-spacing: 1px;
+        }
+        .navi-links {
+            display: flex;
+            gap: 36px;
+            margin-left: 32px;
+            transition: left 0.3s;
+        }
+        .navi-link {
+            color: var(--color-text);
+            text-decoration: none;
+            font-size: 1.08em;
+            font-weight: 500;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: color var(--transition), border-color var(--transition);
+            position: relative;
+        }
+        .navi-link:hover, .navi-link.active {
+            color: var(--color-primary);
+            border-bottom: 2px solid var(--color-primary);
+        }
+        .navi-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            margin-left: auto;
+            z-index: 202;
+        }
+        .navi-toggle span {
+            display: block;
+            width: 28px;
+            height: 3px;
+            margin: 4px 0;
+            background: var(--color-primary);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu {
+            display: none;
+        }
+        @media (max-width: 900px) {
+            .navi {
+                padding: 0 12px;
+            }
+            .navi-logo {
+                font-size: 1.5em;
+                margin-right: 13px;
+            }
+            .navi-links {
+                gap: 18px;
+                margin-left: 12px;
+            }
+            .held-content {
+                padding: 0 16px;
+            }
+            .main-content {
+                padding: 40px 8px 24px 8px;
+            }
+            .funs-section {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .fun-block {
+                max-width: 100%;
+            }
+            .contact-section {
+                padding: 30px 8px;
+            }
+        }
+        @media (max-width: 700px) {
+            .navi {
+                padding: 0 7px;
+                height: 57px;
+            }
+            .navi-logo {
+                font-size: 1.1em;
+                margin-right: 0;
+                gap: 6px;
+            }
+            .navi-links {
+                display: none;
+            }
+            .navi-toggle {
+                display: flex;
+            }
+            .sidebar-menu {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                left: -240px;
+                width: 200px;
+                height: 100vh;
+                background: var(--color-bg-alt);
+                box-shadow: 2px 0 16px rgba(0,0,0,0.18);
+                z-index: 300;
+                padding-top: 56px;
+                transition: left 0.3s;
+            }
+            .sidebar-menu.open {
+                left: 0;
+            }
+            .sidebar-link {
+                color: var(--color-primary);
+                text-decoration: none;
+                font-size: 1.1em;
+                font-weight: 500;
+                padding: 18px 24px;
+                border-bottom: 1px solid var(--color-border);
+                transition: background 0.2s, color 0.2s;
+            }
+            .sidebar-link:hover, .sidebar-link.active {
+                background: #222;
+                color: var(--color-butn-hover);
+            }
+            body.sidebar-open {
+                overflow: hidden;
+            }
+            .held {
+                padding: 48px 0 32px 0;
+            }
+            .held-title {
+                font-size: 2em;
+            }
+            .toool-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .funs-section {
+                margin: 40px 0 30px 0;
+            }
+            .contact-section {
+                margin: 40px 0 30px 0;
+            }
+            footer {
+                padding: 24px 0 12px 0;
+                margin-top: 40px;
+            }
+        }
+        @media (max-width: 400px) {
+            .held-title {
+                font-size: 1.3em;
+            }
+            .section-title {
+                font-size: 1.1em;
+            }
+        }
+        .held {
+            width: 100%;
+            min-height: 410px;
+            background: var(--color-bg-held);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 80px 0 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .held-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 48px;
+            z-index: 2;
+        }
+        .held-title {
+            font-size: 3.2em;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+            color: var(--color-primary);
+            text-shadow: 0 2px 16px rgba(255,255,255,0.08);
+        }
+        .held-subtitle {
+            font-size: 1.35em;
+            color: var(--color-text-muted);
+            margin-bottom: 36px;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+        .held-cta {
+            display: flex;
+            gap: 24px;
+        }
+        .butn-main {
+            background: var(--color-butn);
+            color: #111;
+            border: none;
+            border-radius: 8px;
+            padding: 18px 38px;
+            font-size: 1.15em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: var(--shadow-butn);
+            transition: background var(--transition), color var(--transition), box-shadow var(--transition);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        .butn-main:hover {
+            background: var(--color-butn-hover);
+            color: #111;
+            box-shadow: 0 4px 24px 0 rgba(255,255,255,0.10);
+        }
+        .butn-secondary {
+            background: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            border-radius: 8px;
+            padding: 16px 32px;
+            font-size: 1.08em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background var(--transition), color var(--transition), border-color var(--transition);
+            text-decoration: none;
+        }
+        .butn-secondary:hover {
+            background: var(--color-primary);
+            color: #111;
+            border-color: var(--color-primary);
+        }
+        .main-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 48px 32px 48px;
+        }
+        .section-title {
+            font-size: 2em;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+        }
+        .section-desc {
+            color: var(--color-text-muted);
+            font-size: 1.15em;
+            margin-bottom: 36px;
+            max-width: 700px;
+        }
+        .toool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 36px;
+            margin-bottom: 60px;
+        }
+        .toool-card {
+            background: var(--color-card);
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
+            padding: 38px 28px 32px 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            border: 2px solid transparent;
+            transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+            position: relative;
+            min-height: 220px;
+        }
+        .toool-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-6px) scale(1.025);
+            box-shadow: 0 8px 32px 0 rgba(255,255,255,0.10);
+        }
+        .toool-icon {
+            font-size: 2.2em;
+            margin-bottom: 17px;
+            color: var(--color-primary);
+            filter: none;
+        }
+        .toool-title {
+            font-size: 1.22em;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 7px;
+        }
+        .toool-desc {
+            color: var(--color-text-muted);
+            font-size: 1.05em;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+        .toool-butn {
+            background: var(--color-butn);
+            color: #111;
+            border: none;
+            border-radius: 7px;
+            padding: 12px 24px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background var(--transition), color var(--transition);
+            margin-top: auto;
+            box-shadow: var(--shadow-butn);
+        }
+        .toool-butn:hover {
+            background: var(--color-butn-hover);
+            color: #111;
+        }
+        .funs-section {
+            margin: 80px 0 60px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 48px;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+        .fun-block {
+            flex: 1 1 260px;
+            background: var(--color-bg-alt);
+            border-radius: 14px;
+            padding: 32px 24px;
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,0.10);
+            min-width: 220px;
+            max-width: 340px;
+            margin-bottom: 12px;
+            border-left: 5px solid var(--color-primary);
+            transition: border-color var(--transition);
+        }
+        .fun-block:hover {
+            border-left: 5px solid var(--color-butn-hover);
+        }
+        .fun-title {
+            font-size: 1.18em;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+        .fun-desc {
+            color: var(--color-text-muted);
+            font-size: 1.05em;
+            line-height: 1.5;
+        }
+        .contact-section {
+            margin: 80px 0 60px 0;
+            background: var(--color-bg-alt);
+            border-radius: 18px;
+            padding: 48px 32px;
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,0.10);
+            max-width: 700px;
+        }
+        .contact-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 16px;
+        }
+        .contact-desc {
+            color: var(--color-text-muted);
+            font-size: 1.05em;
+            margin-bottom: 18px;
+        }
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .contact-input, .contact-textarea {
+            background: #181818;
+            color: var(--color-text);
+            border: 1.5px solid var(--color-border);
+            border-radius: 7px;
+            padding: 14px 12px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: none;
+            transition: border-color var(--transition);
+        }
+        .contact-input:focus, .contact-textarea:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+        .contact-butn {
+            background: var(--color-butn);
+            color: #111;
+            border: none;
+            border-radius: 7px;
+            padding: 13px 28px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background var(--transition), color var(--transition);
+            margin-top: 8px;
+            align-self: flex-start;
+        }
+        .contact-butn:hover {
+            background: var(--color-butn-hover);
+            color: #111;
+        }
+        footer {
+            width: 100%;
+            background: var(--color-footer);
+            color: var(--color-text-muted);
+            text-align: center;
+            padding: 38px 0 18px 0;
+            font-size: 1em;
+            letter-spacing: 0.5px;
+            margin-top: 80px;
+        }
+        .footer-links {
+            margin-bottom: 10px;
+        }
+        .footer-links a {
+            color: var(--color-primary);
+            text-decoration: none;
+            margin: 0 18px;
+            font-weight: 600;
+            transition: color var(--transition);
+        }
+        .footer-links a:hover {
+            color: var(--color-butn-hover);
+            text-decoration: underline;
+        }
+        .footer-copy {
+            margin-top: 9px;
+            font-size: 0.98em;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navi">
+        <a href="#" class="navi-logo">ETME <span>- TECH</span></a>
+        <div class="navi-toggle" id="navi-toggle" aria-label="Open navigation" tabindex="0">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="navi-links" id="navi-links">
+            <a class="navi-link active" href="#">Home</a>
+            <a class="navi-link" href="#toools">Tools</a>
+            <a class="navi-link" href="#funs">Features</a>
+            <a class="navi-link" href="#contact">Contact</a>
+        </div>
+        <nav class="sidebar-menu" id="sidebar-menu">
+            <a class="sidebar-link active" href="#">Home</a>
+            <a class="sidebar-link" href="#toools">Tools</a>
+            <a class="sidebar-link" href="#funs">Features</a>
+            <a class="sidebar-link" href="#contact">Contact</a>
+        </nav>
+    </nav>
+    <section class="held">
+        <div class="held-bg-accent"></div>
+        <div class="held-bg-accent2"></div>
+        <div class="held-content">
+            <div class="held-title">Your Modern Toolbox for Smart Web Tools</div>
+            <div class="held-subtitle">
+                Discover a growing collection of practical, fun tools for your daily digital life. They are fast and easy to use.
+            </div>
+            <div class="held-cta">
+                <a href="#tools" class="butn-main">Explore Tools</a>
+                <a href="#contact" class="butn-secondary">Contact Us</a>
+            </div>
+        </div>
+    </section>
+    <main class="main-content">
+        <section id="toools">
+            <div class="section-title">Our Tools</div>
+            <div class="section-desc">
+                Useful, creative, and fun. Explore our handpicked selection of web tools. More coming soon.
+            </div>
+            <div class="toool-grid">
+                <div class="toool-card">
+                    <div class="toool-icon">🎡</div>
+                    <div class="toool-title">Random Wheel</div>
+                    <div class="toool-desc">Let the wheel make the choice for you. Enter your options and spin for a random selection.</div>
+                    <a class="toool-butn" href="tools/randomrad.html">Try now</a>
+                </div>
+                <div class="toool-card">
+                    <div class="toool-icon">🔢</div>
+                    <div class="toool-title">Random Number</div>
+                    <div class="toool-desc">Generate random numbers for games and more.</div>
+                    <a class="toool-butn" href="tools/randomnumber.html">Try now</a>
+                </div>
+                <div class="toool-card">
+                    <div class="toool-icon">😃</div>
+                    <div class="toool-title">Emoji Text</div>
+                    <div class="toool-desc">Transform your text into a series of emojis for enjoyment and creativity.</div>
+                    <a class="toool-butn" href="#">Coming soon</a>
+                </div>
+                <div class="toool-card">
+                    <div class="toool-icon">📝</div>
+                    <div class="toool-title">Text Tools</div>
+                    <div class="toool-desc">Nothing here Yet.</div>
+                    <a class="toool-butn" href="#">Coming soon</a>
+                </div>
+                <div class="toool-card">
+                    <div class="toool-icon">🔧</div>
+                    <div class="toool-title">More Tools</div>
+                    <div class="toool-desc">We are constantly adding new tools for you. Stay updated!</div>
+                    <a class="toool-butn" href="#">Coming soon</a>
+                </div>
+            </div>
+        </section>
+        <section id="funs" class="funs-section">
+            <div class="fun-block">
+                <div class="fun-title">No Registration</div>
+                <div class="fun-desc">All tools are free to use, no sign-up or login required. Just start using.</div>
+            </div>
+            <div class="fun-block">
+                <div class="fun-title">Modern & Responsive</div>
+                <div class="fun-desc">Enjoy a seamless experience on desktop, tablet, and mobile. The design adapts to your device.</div>
+            </div>
+            <div class="fun-block">
+                <div class="fun-title">Privacy Friendly</div>
+                <div class="fun-desc">We respect your privacy. No tracking, no ads, no unnecessary data collection.</div>
+            </div>
+            <div class="fun-block">
+                <div class="fun-title">Always Growing</div>
+                <div class="fun-desc">We regularly add new tools and features based on your feedback and needs.</div>
+            </div>
+        </section>
+        <section id="contact" class="contact-section">
+            <div class="contact-title">Contact Us</div>
+            <div class="contact-desc">
+                Have feedback, ideas, or want to report a bug? Send us a message!
+            </div>
+            <form class="contact-form" autocomplete="off" onsubmit="event.preventDefault(); alert('Thank you for your message!'); this.reset();">
+                <input class="contact-input" type="text" name="name" placeholder="Your Name" required>
+                <input class="contact-input" type="email" name="email" placeholder="Your Email" required>
+                <textarea class="contact-textarea" name="message" rows="5" placeholder="Your Message" required></textarea>
+                <button class="contact-butn" type="submit">Send Message</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-links">
+            <a href="impressum.html">Imprint</a> |
+            <a href="datenschutz.html">Privacy Policy</a>
+        </div>
+        <div class="footer-copy">
+            &copy; 2025 ETME - TECH.
+        </div>
+    </footer>
+    <script>
+        const toggle = document.getElementById('navi-toggle');
+        const sidebar = document.getElementById('sidebar-menu');
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            document.body.classList.remove('sidebar-open');
+        }
+        function openSidebar() {
+            sidebar.classList.add('open');
+            document.body.classList.add('sidebar-open');
+        }
+        toggle.addEventListener('click', () => {
+            if (sidebar.classList.contains('open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+        toggle.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                if (sidebar.classList.contains('open')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            }
+        });
+        Array.from(sidebar.getElementsByClassName('sidebar-link')).forEach(link => {
+            link.addEventListener('click', () => {
+                closeSidebar();
+            });
+        });
+        window.addEventListener('resize', () => {
+            closeSidebar();
+        });
+    </script>
+</body>
+</html>

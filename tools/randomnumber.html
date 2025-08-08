@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Zufallszahl Generator | ETME - TECH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="icon" href="data:,">
+    <style>
+        :root {
+            --color-bg: #111;
+            --color-bg-alt: #181818;
+            --color-primary: #fff;
+            --color-text: #fff;
+            --color-text-muted: #bbb;
+            --color-footer: #181818;
+            --color-border: #222;
+            --color-btn: #fff;
+            --color-btn-hover: #bbb;
+            --shadow-btn: 0 2px 8px 0 rgba(255,255,255,0.04);
+            --transition: 0.18s cubic-bezier(.4,0,.2,1);
+            --accent: #4fc3f7;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: 'Segoe UI', 'Inter', Arial, sans-serif;
+            font-size: 18px;
+            min-height: 100vh;
+            scroll-behavior: smooth;
+        }
+        .navbar {
+            width: 100%;
+            background: var(--color-bg-alt);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 48px;
+            height: 72px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-logo {
+            font-size: 2.1em;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--color-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+            transition: margin-right 0.2s;
+            z-index: 202;
+        }
+        .navbar-logo span {
+            color: var(--color-text-muted);
+            font-weight: 400;
+            font-size: 0.7em;
+            letter-spacing: 1px;
+        }
+        .navbar-links {
+            display: flex;
+            gap: 36px;
+            margin-left: 32px;
+            transition: left 0.3s;
+        }
+        .navbar-link {
+            color: var(--color-text);
+            text-decoration: none;
+            font-size: 1.08em;
+            font-weight: 500;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: color var(--transition), border-color var(--transition);
+            position: relative;
+        }
+        .navbar-link:hover, .navbar-link.active {
+            color: var(--color-primary);
+            border-bottom: 2px solid var(--color-primary);
+        }
+        .navbar-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            margin-left: auto;
+            z-index: 202;
+        }
+        .navbar-toggle span {
+            display: block;
+            width: 28px;
+            height: 3px;
+            margin: 4px 0;
+            background: var(--color-primary);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+        .sidebar-menu {
+            display: none;
+        }
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 0 12px;
+            }
+            .navbar-logo {
+                font-size: 1.5em;
+                margin-right: 12px;
+            }
+            .navbar-links {
+                gap: 18px;
+                margin-left: 10px;
+            }
+        }
+        @media (max-width: 700px) {
+            .navbar {
+                padding: 0 8px;
+                height: 56px;
+            }
+            .navbar-logo {
+                font-size: 1.1em;
+                margin-right: 0;
+                gap: 6px;
+            }
+            .navbar-links {
+                display: none;
+            }
+            .navbar-toggle {
+                display: flex;
+            }
+            .sidebar-menu {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                left: -240px;
+                width: 200px;
+                height: 100vh;
+                background: var(--color-bg-alt);
+                box-shadow: 2px 0 16px rgba(0,0,0,0.18);
+                z-index: 300;
+                padding-top: 56px;
+                transition: left 0.3s;
+            }
+            .sidebar-menu.open {
+                left: 0;
+            }
+            .sidebar-link {
+                color: var(--color-primary);
+                text-decoration: none;
+                font-size: 1.1em;
+                font-weight: 500;
+                padding: 18px 24px;
+                border-bottom: 1px solid var(--color-border);
+                transition: background 0.2s, color 0.2s;
+            }
+            .sidebar-link:hover, .sidebar-link.active {
+                background: #222;
+                color: var(--color-btn-hover);
+            }
+            body.sidebar-open {
+                overflow: hidden;
+            }
+        }
+        .main-content {
+            max-width: 520px;
+            margin: 40px auto 0 auto;
+            padding: 24px 8px 0 8px;
+        }
+        .main-content h1 {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--color-primary);
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .main-content p {
+            color: var(--color-text-muted);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .random-box {
+            background: #181818;
+            border: 1.5px solid #444;
+            border-radius: 12px;
+            padding: 32px 24px 36px 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .random-inputs {
+            display: flex;
+            gap: 18px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .random-inputs input {
+            width: 90px;
+            padding: 10px;
+            border-radius: 7px;
+            border: 1.5px solid #444;
+            background: #222;
+            color: #fff;
+            font-size: 1.1em;
+            text-align: center;
+            transition: border 0.2s;
+        }
+        .random-inputs input:focus {
+            border: 1.5px solid var(--accent);
+            outline: none;
+        }
+        .random-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 10px 32px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            box-shadow: var(--shadow-btn);
+            transition: background 0.2s, transform 0.2s;
+        }
+        .random-btn:hover {
+            background: #0288d1;
+            transform: scale(1.04);
+        }
+        .random-result {
+            margin-top: 32px;
+            font-size: 3.5em;
+            font-weight: 800;
+            color: var(--accent);
+            min-height: 1.2em;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 16px #222, 0 0px 0px #fff;
+            transition: color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 1.2em;
+            user-select: all;
+        }
+        .rolling {
+            animation: rolling 1.1s cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes rolling {
+            0% { filter: blur(6px); opacity: 0.5; transform: scale(1.2) rotate(-8deg);}
+            60% { filter: blur(2px); opacity: 0.8; transform: scale(1.08) rotate(4deg);}
+            80% { filter: blur(0.5px); opacity: 1; transform: scale(1.02) rotate(-2deg);}
+            100% { filter: blur(0); opacity: 1; transform: scale(1) rotate(0);}
+        }
+        .footer-links {
+            margin-bottom: 10px;
+        }
+        .footer-links a {
+            color: var(--color-primary);
+            text-decoration: none;
+            margin: 0 18px;
+            font-weight: 600;
+            transition: color var(--transition);
+        }
+        .footer-links a:hover {
+            color: var(--color-btn-hover);
+            text-decoration: underline;
+        }
+        .footer-copy {
+            margin-top: 8px;
+            font-size: 0.98em;
+        }
+        footer {
+            width: 100%;
+            background: var(--color-footer);
+            color: var(--color-text-muted);
+            text-align: center;
+            padding: 38px 0 18px 0;
+            font-size: 1em;
+            letter-spacing: 0.5px;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="../index.html" class="navbar-logo">ETME <span>- TECH</span></a>
+        <div class="navbar-toggle" id="navbar-toggle" aria-label="Open navigation" tabindex="0">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="navbar-links" id="navbar-links">
+            <a class="navbar-link" href="../index.html">Home</a>
+            <a class="navbar-link" href="../index.html#tools">Tools</a>
+            <a class="navbar-link" href="../index.html#features">Features</a>
+            <a class="navbar-link" href="../index.html#contact">Contact</a>
+        </div>
+        <nav class="sidebar-menu" id="sidebar-menu">
+            <a class="sidebar-link" href="../index.html">Home</a>
+            <a class="sidebar-link" href="../index.html#tools">Tools</a>
+            <a class="sidebar-link" href="../index.html#features">Features</a>
+            <a class="sidebar-link" href="../index.html#contact">Contact</a>
+        </nav>
+    </nav>
+    <div class="main-content">
+        <h1>Zufallszahl Generator</h1>
+        <p>Ziehe eine zufällige Zahl zwischen deinem Minimum und Maximum.<br>Mit cooler Animation!</p>
+        <div class="random-box">
+            <div class="random-inputs">
+                <input type="number" id="minInput" placeholder="Minimum" value="1" min="-999999" max="999999">
+                <input type="number" id="maxInput" placeholder="Maximum" value="100" min="-999999" max="999999">
+            </div>
+            <button class="random-btn" id="generateBtn">Ziehe Zahl</button>
+            <div class="random-result" id="resultBox"></div>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-links">
+            <a href="../impressum.html">Impressum</a> |
+            <a href="../datenschutz.html">Datenschutz</a>
+        </div>
+        <div class="footer-copy">
+            &copy; 2025 ETME - TECH.
+        </div>
+    </footer>
+    <script>
+        const minInput = document.getElementById('minInput');
+        const maxInput = document.getElementById('maxInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const resultBox = document.getElementById('resultBox');
+
+        function randomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function animateResult(finalNumber) {
+            let duration = 1100;
+            let start = null;
+            let min = Number(minInput.value);
+            let max = Number(maxInput.value);
+            let lastFrame = null;
+            function step(ts) {
+                if (!start) start = ts;
+                let progress = (ts - start) / duration;
+                if (progress > 1) progress = 1;
+                let displayNum;
+                if (progress < 1) {
+                    displayNum = randomInt(min, max);
+                    if (displayNum === lastFrame) displayNum = randomInt(min, max);
+                    resultBox.textContent = displayNum;
+                    resultBox.classList.add('rolling');
+                    requestAnimationFrame(step);
+                } else {
+                    resultBox.textContent = finalNumber;
+                    resultBox.classList.remove('rolling');
+                }
+                lastFrame = displayNum;
+            }
+            requestAnimationFrame(step);
+        }
+
+        generateBtn.addEventListener('click', () => {
+            let min = Number(minInput.value);
+            let max = Number(maxInput.value);
+            if (isNaN(min) || isNaN(max) || min > max) {
+                resultBox.textContent = 'Ungültiger Bereich!';
+                resultBox.style.color = "#e57373";
+                return;
+            }
+            resultBox.style.color = "";
+            let number = randomInt(min, max);
+            animateResult(number);
+        });
+
+        // Responsive Sidebar
+        const toggle = document.getElementById('navbar-toggle');
+        const sidebar = document.getElementById('sidebar-menu');
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            document.body.classList.remove('sidebar-open');
+        }
+        function openSidebar() {
+            sidebar.classList.add('open');
+            document.body.classList.add('sidebar-open');
+        }
+        toggle.addEventListener('click', () => {
+            if (sidebar.classList.contains('open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+        toggle.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                if (sidebar.classList.contains('open')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            }
+        });
+        Array.from(sidebar.getElementsByClassName('sidebar-link')).forEach(link => {
+            link.addEventListener('click', () => {
+                closeSidebar();
+            });
+        });
+        window.addEventListener('resize', () => {
+            closeSidebar();
+        });
+    </script>
+</body>
+</html>
+
