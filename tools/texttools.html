@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mein Cooles Tool</title>
+    <style>
+        :root {
+          --bg: #111;
+          --bg-alt: #181818;
+          --primary: #fff;
+          --text: #fff;
+          --text-muted: #bbb;
+          --footer: #181818;
+          --accent: #4fc3f7;
+        }
+        html, body {
+          margin: 0;
+          padding: 0;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          background: var(--bg);
+          color: var(--text);
+          font-family: 'Segoe UI', Inter, Arial, sans-serif;
+        }
+         .navbar {
+          width: 100%;
+          background: var(--color-bg-alt);
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          padding: 0 48px;
+          height: 72px;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+          position: sticky;
+          top: 0;
+          z-index: 100;
+        }
+
+        .navbar-logo {
+          font-size: 2.1em;
+          font-weight: 800;
+          letter-spacing: 2px;
+          color: var(--color-primary);
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          user-select: none;
+          transition: margin-right 0.2s;
+          z-index: 202;
+        }
+
+        .navbar-logo span {
+          color: var(--color-text-muted);
+          font-weight: 400;
+          font-size: 0.7em;
+          letter-spacing: 1px;
+        }
+
+        .navbar-links {
+          display: flex;
+          gap: 36px;
+          margin-left: 32px;
+          transition: left 0.3s;
+        }
+
+        .navbar-link {
+          color: var(--color-text);
+          text-decoration: none;
+          font-size: 1.08em;
+          font-weight: 500;
+          padding: 8px 0;
+          border-bottom: 2px solid transparent;
+          transition: color var(--transition), border-color var(--transition);
+          position: relative;
+        }
+
+        .navbar-link:hover,
+        .navbar-link.active {
+          color: var(--color-primary);
+          border-bottom: 2px solid var(--color-primary);
+        }
+
+        .navbar-toggle {
+          display: none;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          width: 40px;
+          height: 40px;
+          cursor: pointer;
+          margin-left: auto;
+          z-index: 202;
+        }
+
+        .navbar-toggle span {
+          display: block;
+          width: 28px;
+          height: 3px;
+          margin: 4px 0;
+          background: var(--color-primary);
+          border-radius: 2px;
+          transition: all 0.3s;
+        }
+
+        .sidebar-menu {
+          display: none;
+        }
+
+        @media (max-width: 900px) {
+          .navbar {
+            padding: 0 12px;
+          }
+          .navbar-logo {
+            font-size: 1.5em;
+            margin-right: 12px;
+          }
+          .navbar-links {
+            gap: 18px;
+            margin-left: 10px;
+          }
+        }
+
+        @media (max-width: 700px) {
+          .navbar {
+            padding: 0 8px;
+            height: 56px;
+          }
+          .navbar-logo {
+            font-size: 1.1em;
+            margin-right: 0;
+            gap: 6px;
+          }
+          .navbar-links {
+            display: none;
+          }
+          .navbar-toggle {
+            display: flex;
+          }
+          .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: -240px;
+            width: 200px;
+            height: 100vh;
+            background: var(--color-bg-alt);
+            box-shadow: 2px 0 16px rgba(0,0,0,0.18);
+            z-index: 300;
+            padding-top: 56px;
+            transition: left 0.3s;
+          }
+          .sidebar-menu.open {
+            left: 0;
+          }
+          .sidebar-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 500;
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--color-border);
+            transition: background 0.2s, color 0.2s;
+          }
+          .sidebar-link:hover,
+          .sidebar-link.active {
+            background: #222;
+            color: var(--color-btn-hover);
+          }
+          body.sidebar-open {
+            overflow: hidden;
+          }
+        }
+        main {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 16px;
+          gap: 16px;
+          overflow: auto;
+        }
+        .toolbarrOben {
+          display: flex;
+          gap: 8px;
+        }
+        .farbKlekse,
+        .btnErassr,
+        .btnTypen {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 18px;
+          border: none;
+        }
+        .farbKlekse {
+          border: 2px solid white;
+        }
+        .btnErassr,
+        .btnTypen {
+          background: #333;
+          color: #fff;
+        }
+        .drawing-wrapper {
+          position: relative;
+          width: 80vw;
+          max-width: 400px;
+          aspect-ratio: 2/3;
+          background-image: url('paper.png');
+          background-size: cover;
+          background-position: center;
+          box-shadow: 0 0 10px black;
+        }
+        #drawCanvaz,
+        #textTypThing {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+        #textTypThing {
+          display: none;
+          font-size: 18px;
+          line-height: 24px;
+          padding: 16px;
+          background: transparent;
+          border: none;
+          outline: none;
+          resize: none;
+          color: black;
+        }
+        .colorPickrThing {
+          width: 80vw;
+          max-width: 400px;
+          background: #fff;
+          border: 2px solid #000;
+          border-radius: 16px;
+          padding: 16px;
+        }
+        .colorCirclle {
+          width: 100%;
+          height: 200px;
+          border-radius: 50%;
+          background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
+          cursor: crosshair;
+        }
+        .untenLeistte {
+          display: flex;
+          gap: 8px;
+        }
+        .untenLeistte button {
+          padding: 6px 12px;
+          background: #222;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        footer {
+          width: 100%;
+          background: var(--footer);
+          color: var(--text-muted);
+          text-align: center;
+          padding: 18px 0;
+          font-size: 1em;
+          letter-spacing: 0.5px;
+        }
+        footer a {
+          color: var(--text-muted);
+          text-decoration: none;
+          margin: 0 8px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <a href="../index.html" class="navbar-logo">ETME <span>- TECH</span></a>
+    <div class="navbar-links">
+        <a class="navbar-link" href="../index.html">Home</a>
+        <a class="navbar-link" href="../index.html#toools">Tools</a>
+        <a class="navbar-link" href="../index.html#funs">Features</a>
+        <a class="navbar-link" href="../index.html#contact">Contact</a>
+    </div>
+</nav>
+<main>
+    <div class="toolbarrOben">
+        <div class="farbKlekse" style="background:red;"></div>
+        <div class="farbKlekse" style="background:blue;"></div>
+        <div class="farbKlekse" style="background:green;"></div>
+        <div class="farbKlekse" style="background:orange;"></div>
+        <div class="farbKlekse" style="background:purple;"></div>
+        <button class="btnErassr">🧽</button>
+        <button class="btnTypen">⌨️</button>
+    </div>
+    <div class="drawing-wrapper">
+        <canvas id="drawCanvaz"></canvas>
+        <textarea id="textTypThing" placeholder="Tippe hier..."></textarea>
+    </div>
+
+    <div class="untenLeistte">
+        <button id="btnZuruck">⬅️</button>
+        <button id="btnNeueseite">➕ New Site</button>
+        <button id="btnWeiter">➡️</button>
+        <button id="btnSpeichern">📥 Download</button>
+    </div>
+</main>
+<footer>
+    <div class="footer-links">
+        <a href="../impressum.html">Imprint</a> |
+        <a href="../datenschutz.html">Privacy Policy</a>
+    </div>
+    <div class="footer-copy">
+        &copy; 2025 ETME - TECH ( CC0 1.0 )
+    </div>
+</footer>
+<script>
+    const canvas = document.getElementById('drawCanvaz')
+    const ctx = canvas.getContext('2d')
+    const textArea = document.getElementById('textTypThing')
+    const colors = document.querySelectorAll('.farbKlekse')
+    const eraserBtn = document.querySelector('.btnErassr')
+    const typenBtn = document.querySelector('.btnTypen')
+    const btnZuruck = document.getElementById('btnZuruck')
+    const btnNeueseite = document.getElementById('btnNeueseite')
+    const btnWeiter = document.getElementById('btnWeiter')
+    const btnSpeichern = document.getElementById('btnSpeichern')
+
+    let drawing = false
+    let erasing = false
+    const normalSize = 2
+    let currentSize = normalSize
+    let currentColor = '#000'
+    let pages = []
+    let currentPage = 0
+
+    function setCanvasSize() {
+      const wrapper = canvas.parentElement
+      canvas.width = wrapper.clientWidth
+      canvas.height = wrapper.clientHeight
+      redraw()
+    }
+    window.addEventListener('resize', setCanvasSize)
+
+    function redraw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      if (pages[currentPage]) {
+        ctx.drawImage(pages[currentPage], 0, 0)
+      }
+    }
+
+    function startDraw(e) {
+      if (textArea.style.display === 'block') return
+      drawing = true
+      ctx.beginPath()
+      draw(e)
+    }
+
+    function draw(e) {
+      if (!drawing) return
+      const rect = canvas.getBoundingClientRect()
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top
+      ctx.globalCompositeOperation = erasing ? 'destination-out' : 'source-over'
+      ctx.lineWidth = currentSize
+      ctx.lineCap = 'round'
+      ctx.strokeStyle = currentColor
+      ctx.lineTo(x, y)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(x, y)
+    }
+
+    function endDraw() {
+      if (!drawing) return
+      drawing = false
+      ctx.beginPath()
+      const img = document.createElement('canvas')
+      img.width = canvas.width
+      img.height = canvas.height
+      img.getContext('2d').drawImage(canvas, 0, 0)
+      pages[currentPage] = img
+    }
+
+    canvas.addEventListener('mousedown', startDraw)
+    canvas.addEventListener('touchstart', startDraw)
+    canvas.addEventListener('mousemove', draw)
+    canvas.addEventListener('touchmove', draw)
+    canvas.addEventListener('mouseup', endDraw)
+    canvas.addEventListener('mouseout', endDraw)
+    canvas.addEventListener('touchend', endDraw)
+
+    colors.forEach(el =>
+      el.addEventListener('click', () => {
+        currentColor = el.style.background
+        erasing = false
+        currentSize = normalSize
+      })
+    )
+    eraserBtn.addEventListener('click', () => {
+      erasing = true
+      currentSize = normalSize * 4
+    })
+    typenBtn.addEventListener('click', () => {
+      textArea.style.display = textArea.style.display === 'block' ? 'none' : 'block'
+    })
+
+    btnNeueseite.addEventListener('click', () => {
+      pages.push(null)
+      currentPage = pages.length - 1
+      redraw()
+    })
+    btnZuruck.addEventListener('click', () => {
+      if (currentPage > 0) currentPage--, redraw()
+    })
+    btnWeiter.addEventListener('click', () => {
+      if (currentPage < pages.length - 1) currentPage++, redraw()
+    })
+    btnSpeichern.addEventListener('click', () => {
+      const out = document.createElement('canvas')
+      const w = canvas.width * pages.length
+      const h = canvas.height
+      out.width = w
+      out.height = h
+      const octx = out.getContext('2d')
+      const bgImg = new Image()
+      bgImg.src = 'paper.png'
+      bgImg.onload = () => {
+        pages.forEach((p, i) => {
+          octx.drawImage(bgImg, i * canvas.width, 0, canvas.width, canvas.height)
+          if (p) octx.drawImage(p, i * canvas.width, 0)
+        })
+        const a = document.createElement('a')
+        a.href = out.toDataURL('image/png')
+        a.download = 'pages.png'
+        a.click()
+      }
+    })
+
+    pages.push(null)
+    setCanvasSize()
+</script>
+</body>
+</html>
